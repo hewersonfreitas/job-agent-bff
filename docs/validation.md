@@ -40,9 +40,23 @@ altera discovery/matching nem o repositório web. O TestClient em Starlette atua
 emite aviso de depreciação de HTTPX; não afeta os testes ou o cliente ATS HTTPX.
 Git local não possui credencial HTTPS; publicação usa o conector GitHub autorizado.
 
-CI remoto: lint/formatação e scanner de segredos passaram. A execução inicial
-foi bloqueada no checkout do backend privado: o GITHUB_TOKEN pertence apenas ao
-BFF. O workflow agora exige `ATS_BACKEND_READ_TOKEN` (Contents: read somente em
-hewersonfreitas/job-agent), sem persistir a credencial no checkout. As etapas de
-integração não são marcadas como aprovadas enquanto esse secret não for provisionado.
-Não foi copiado código privado do backend para tornar o teste público.
+CI remoto: após provisionar `ATS_BACKEND_READ_TOKEN` com Contents: read em
+hewersonfreitas/job-agent, o checkout privado no commit fixado funciona. Ruff,
+scanner de segredos, contrato, 98 testes, três builds Docker e smoke mTLS passaram
+nos eventos push e pull_request após corrigir o healthcheck do serviço sintético.
+O token não persiste no checkout; nenhum código privado foi copiado para o BFF.
+
+O `public-stub` reutiliza a imagem BFF, cujo HEALTHCHECK verifica a porta 8081.
+Como o stub serve na porta 8765, o override antigo desativava esse healthcheck.
+Isso deixava o container sem healthcheck e fazia `compose up --wait` falhar no CI.
+O override agora define um teste TCP na porta correta; o Nginx aguarda
+`service_healthy`. As validações HTTPS, mTLS e de segurança permanecem completas.
+
+O smoke imprime a versão do Compose (local: 5.5.1) e verifica o resultado dos
+quatro overlays via `docker compose config --format json`: ATS, BFF, public-stub
+e Web devem ter testes habilitados e nenhuma porta publicada. Após o startup,
+`docker inspect` deve confirmar os mesmos comandos de healthcheck e estado
+healthy nos quatro containers. Os logs mostram somente versão, serviço e estado,
+sem imprimir configuração completa, caminhos de credenciais ou material privado.
+Essas verificações explícitas não dependem de como cada versão do Compose trata
+serviços sem healthcheck durante `--wait`.

@@ -20,6 +20,8 @@ def command(args, env=None, timeout=180):
 
 
 def run(backend, bff_image, ats_image, validation_image):
+    print(command(["docker", "compose", "version"]).strip(), flush=True)
+    required_services = ("ats-service", "bff", "public-stub", "web")
     spec = importlib.util.spec_from_file_location(
         "synthetic_pki", backend / "scripts/ats_test_credentials.py"
     )
@@ -198,8 +200,16 @@ def run(backend, bff_image, ats_image, validation_image):
         ]
         command([*compose, "config", "--quiet"], env)
         resolved = json.loads(command([*compose, "config", "--format", "json"], env))
-        assert not resolved["services"]["ats-service"].get("ports")
-        assert not resolved["services"]["bff"].get("ports")
+        for name in required_services:
+            service = resolved["services"][name]
+            healthcheck = service.get("healthcheck", {})
+            test = healthcheck.get("test", [])
+            assert not healthcheck.get("disable"), f"{name}: resolved healthcheck is disabled"
+            assert len(test) > 1 and test[0] in {"CMD", "CMD-SHELL"}, (
+                f"{name}: resolved healthcheck must have an executable test"
+            )
+            assert not service.get("ports"), f"{name}: smoke must not publish ports"
+            print(f"{name}: compose config has an enabled {test[0]} healthcheck", flush=True)
         assert resolved["networks"]["ats-private"]["internal"]
         assert resolved["networks"]["bff-edge"]["internal"]
         try:
@@ -242,11 +252,21 @@ def run(backend, bff_image, ats_image, validation_image):
                 ],
                 env,
             )
-            for name in ("ats-service", "bff", "public-stub", "web"):
+            for name in required_services:
                 identifier = command([*compose, "ps", "-q", name], env).strip()
                 meta = json.loads(command(["docker", "inspect", identifier]))[0]
+                assert (
+                    meta["Config"].get("Healthcheck", {}).get("Test")
+                    == resolved["services"][name]["healthcheck"]["test"]
+                ), f"{name}: container healthcheck differs from compose config"
                 assert not meta["HostConfig"]["PortBindings"]
-                assert meta["State"]["Health"]["Status"] == "healthy"
+                assert meta["State"].get("Health", {}).get("Status") == "healthy", (
+                    f"{name}: container must report healthy"
+                )
+                print(
+                    f"{name}: docker inspect confirms the configured healthcheck is healthy",
+                    flush=True,
+                )
             first = command([*compose, "run", "--rm", "--no-deps", "probe"], env)
             print(first.strip())
             command([*compose, "restart", "bff"], env)
