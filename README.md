@@ -42,7 +42,10 @@ python -m venv .venv
 ```
 
 O teste real TLS requer checkout backend v0.8, suas dependências, OpenSSL e DNS
-sintético. A CI os configura e executa também Compose. Alternativa isolada:
+sintético. A CI os configura e executa também Compose. Como o backend é privado, configure
+o secret Actions `ATS_BACKEND_READ_TOKEN`, dedicado, com Contents: read somente
+em `hewersonfreitas/job-agent`. O GITHUB_TOKEN do BFF não dá esse acesso. A CI
+falha explicitamente enquanto faltar essa credencial. Alternativa isolada:
 
 ```sh
 docker build -t job-agent-bff:v0.1 .

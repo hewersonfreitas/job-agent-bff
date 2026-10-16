@@ -39,3 +39,10 @@ exigem o PR posterior documentado. O smoke usa API pública sintética, pois nã
 altera discovery/matching nem o repositório web. O TestClient em Starlette atual
 emite aviso de depreciação de HTTPX; não afeta os testes ou o cliente ATS HTTPX.
 Git local não possui credencial HTTPS; publicação usa o conector GitHub autorizado.
+
+CI remoto: lint/formatação e scanner de segredos passaram. A execução inicial
+foi bloqueada no checkout do backend privado: o GITHUB_TOKEN pertence apenas ao
+BFF. O workflow agora exige `ATS_BACKEND_READ_TOKEN` (Contents: read somente em
+hewersonfreitas/job-agent), sem persistir a credencial no checkout. As etapas de
+integração não são marcadas como aprovadas enquanto esse secret não for provisionado.
+Não foi copiado código privado do backend para tornar o teste público.

@@ -20,10 +20,20 @@ jobs:
         run: ruff check . && ruff format --check .
       - name: Sensitive files
         run: python -m scripts.check_sensitive
+      - name: Require private backend read credential
+        env:
+          ATS_BACKEND_READ_TOKEN: ${{ secrets.ATS_BACKEND_READ_TOKEN }}
+        run: |
+          if [ -z "$ATS_BACKEND_READ_TOKEN" ]; then
+            echo '::error::Configure ATS_BACKEND_READ_TOKEN with Contents: read on hewersonfreitas/job-agent. The repository-scoped GITHUB_TOKEN cannot read this private backend.'
+            exit 1
+          fi
       - name: Checkout real backend contract
         uses: actions/checkout@v4
         with:
           repository: hewersonfreitas/job-agent
+          token: ${{ secrets.ATS_BACKEND_READ_TOKEN }}
+          persist-credentials: false
           ref: b28f3280a90dcebd625956f6bda41ff1b4d92cb3
           path: upstream
       - name: Verify private OpenAPI v0.8

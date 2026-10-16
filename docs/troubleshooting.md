@@ -2,6 +2,7 @@
 
 | Sintoma | Verificação segura |
 |---|---|
+| CI: Repository not found no checkout backend | Configurar ATS_BACKEND_READ_TOKEN em Actions secrets do BFF; token dedicado com Contents: read somente no job-agent privado |
 | BFF não inicia | Conferir presença/modo/owner/caminho absoluto de arquivos e origem HTTPS; não imprimir segredos |
 | Cookie não enviado | HTTPS confiável, Host igual à origem, Path=/, mesma origem; não remover Secure |
 | 401 login | Senha explicitamente provisionada; hash Argon2id gerado pelo comando do projeto |
