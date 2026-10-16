@@ -1,0 +1,47 @@
+name: secure-bff
+on:
+  push:
+    branches: [main, feat/secure-bff-foundation]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test dependencies
+        run: pip install -e '.[dev]'
+      - name: Ruff
+        run: ruff check . && ruff format --check .
+      - name: Sensitive files
+        run: python -m scripts.check_sensitive
+      - name: Checkout real backend contract
+        uses: actions/checkout@v4
+        with:
+          repository: hewersonfreitas/job-agent
+          ref: b28f3280a90dcebd625956f6bda41ff1b4d92cb3
+          path: upstream
+      - name: Verify private OpenAPI v0.8
+        run: python -m scripts.check_contract --upstream upstream
+      - name: Install backend test runtime
+        run: python -m venv /tmp/ats-runtime && /tmp/ats-runtime/bin/pip install -r upstream/requirements.txt
+      - name: Configure synthetic test DNS
+        run: echo '127.0.0.1 ats-service' | sudo tee -a /etc/hosts
+      - name: Unit, security and real mTLS integration tests
+        env:
+          ATS_BACKEND_DIRECTORY: ${{ github.workspace }}/upstream
+          ATS_PYTHON: /tmp/ats-runtime/bin/python
+        run: pytest -q
+      - name: Build production BFF
+        run: docker build -t job-agent-bff:v0.1 .
+      - name: Build actual ATS v0.8
+        run: docker build -t job-agent-ats:v0.8 upstream
+      - name: Build isolated test tools
+        run: docker build -f deploy/Dockerfile.validation -t job-agent-bff:validation .
+      - name: Integrated Docker Compose and real DNS mTLS smoke
+        run: python -m scripts.docker_smoke --backend upstream

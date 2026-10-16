@@ -1,0 +1,8 @@
+*
+!pyproject.toml
+!bff/
+!bff/*.py
+!contracts/
+!contracts/*.json
+!contracts/*.py
+!contracts/*.sha256

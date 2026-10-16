@@ -1,0 +1,8 @@
+ARG BFF_IMAGE=job-agent-bff:v0.1
+FROM ${BFF_IMAGE}
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends openssl git && rm -rf /var/lib/apt/lists/* && pip install 'pytest==8.4.2' 'ruff==0.14.1' 'cryptography>=45,<47'
+# Backend's TLS adapter requires its own pinned Uvicorn. Never downgrade the BFF runtime.
+RUN python -m venv /opt/ats && /opt/ats/bin/pip install 'fastapi==0.115.12' 'uvicorn==0.34.2' 'httpx==0.28.1' 'pydantic==2.11.4' 'python-docx==1.2.0' 'pypdf==6.21.0' 'reportlab==5.0.1'
+ENV ATS_PYTHON=/opt/ats/bin/python
+USER 10001:10001
