@@ -1,0 +1,48 @@
+# Overlay after job-agent/compose.yaml and job-agent/compose.ats.yaml.
+services:
+  bff:
+    build:
+      context: ${BFF_DIRECTORY:?Set absolute BFF_DIRECTORY}
+    user: ${BFF_RUNTIME_USER:-10001:10001}
+    environment:
+      BFF_ORIGIN: ${BFF_ORIGIN:?Set exact HTTPS browser origin}
+      BFF_OPERATOR_ID: ${BFF_OPERATOR_ID:?Match the private ATS policy operator_id}
+      BFF_DATABASE: /data/sessions.db
+      BFF_PASSWORD_FILE: /run/secrets/bff_password
+      BFF_TOKEN_FILE: /run/secrets/ats_token
+      BFF_CA_FILE: /run/secrets/bff_server_ca
+      BFF_CERT_FILE: /run/secrets/bff_client_cert
+      BFF_KEY_FILE: /run/secrets/bff_client_key
+    secrets: [bff_password, ats_token, bff_server_ca, bff_client_cert, bff_client_key]
+    volumes:
+      - bff-sessions:/data
+    networks: [ats-private, bff-edge]
+    depends_on:
+      ats-service:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=0700
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8081/healthz',timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+networks:
+  bff-edge:
+    internal: true
+volumes:
+  bff-sessions:
+secrets:
+  bff_password:
+    file: ${BFF_PASSWORD_FILE:?Set private absolute BFF_PASSWORD_FILE}
+  bff_server_ca:
+    file: ${BFF_CA_FILE:?Set private absolute BFF_CA_FILE}
+  bff_client_cert:
+    file: ${BFF_CERT_FILE:?Set private absolute BFF_CERT_FILE}
+  bff_client_key:
+    file: ${BFF_KEY_FILE:?Set private absolute BFF_KEY_FILE}

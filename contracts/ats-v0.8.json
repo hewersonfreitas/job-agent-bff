@@ -1,0 +1,1762 @@
+{
+  "components": {
+    "schemas": {
+      "ApiError": {
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "detail"
+        ],
+        "title": "ApiError",
+        "type": "object"
+      },
+      "Approval": {
+        "additionalProperties": false,
+        "properties": {
+          "acknowledge_gaps": {
+            "default": false,
+            "title": "Acknowledge Gaps",
+            "type": "boolean"
+          },
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "notes": {
+            "maxLength": 3000,
+            "minLength": 1,
+            "title": "Notes",
+            "type": "string"
+          },
+          "supersede_version_id": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersede Version Id"
+          }
+        },
+        "required": [
+          "expected_revision",
+          "notes"
+        ],
+        "title": "Approval",
+        "type": "object"
+      },
+      "Experience": {
+        "additionalProperties": false,
+        "properties": {
+          "company_id": {
+            "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+            "title": "Company Id",
+            "type": "string"
+          },
+          "detail_ids": {
+            "items": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "title": "Detail Ids",
+            "type": "array"
+          },
+          "id": {
+            "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "period_ids": {
+            "items": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+              "type": "string"
+            },
+            "maxItems": 4,
+            "title": "Period Ids",
+            "type": "array"
+          },
+          "project_ids": {
+            "items": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Project Ids",
+            "type": "array"
+          },
+          "title_id": {
+            "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+            "title": "Title Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title_id",
+          "company_id"
+        ],
+        "title": "Experience",
+        "type": "object"
+      },
+      "Fact": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "identity",
+              "contact",
+              "summary",
+              "title",
+              "company",
+              "period",
+              "responsibility",
+              "project",
+              "technology",
+              "skill",
+              "education",
+              "certification",
+              "language",
+              "result",
+              "domain",
+              "other"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "source": {
+            "additionalProperties": true,
+            "title": "Source",
+            "type": "object"
+          },
+          "state": {
+            "default": "pending",
+            "enum": [
+              "pending",
+              "confirmed"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "text": {
+            "maxLength": 3000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          },
+          "translations": {
+            "additionalProperties": {
+              "maxLength": 3000,
+              "minLength": 1,
+              "type": "string"
+            },
+            "propertyNames": {
+              "enum": [
+                "pt-BR",
+                "en"
+              ]
+            },
+            "title": "Translations",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "text"
+        ],
+        "title": "Fact",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "ProfessionalProfile": {
+        "additionalProperties": false,
+        "properties": {
+          "certification_ids": {
+            "items": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+              "type": "string"
+            },
+            "maxItems": 30,
+            "title": "Certification Ids",
+            "type": "array"
+          },
+          "education_ids": {
+            "items": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+              "type": "string"
+            },
+            "maxItems": 30,
+            "title": "Education Ids",
+            "type": "array"
+          },
+          "experiences": {
+            "items": {
+              "$ref": "#/components/schemas/Experience"
+            },
+            "maxItems": 50,
+            "title": "Experiences",
+            "type": "array"
+          },
+          "facts": {
+            "items": {
+              "$ref": "#/components/schemas/Fact"
+            },
+            "maxItems": 300,
+            "title": "Facts",
+            "type": "array"
+          },
+          "identity_ids": {
+            "items": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Identity Ids",
+            "type": "array"
+          },
+          "language": {
+            "default": "pt-BR",
+            "enum": [
+              "pt-BR",
+              "en"
+            ],
+            "title": "Language",
+            "type": "string"
+          },
+          "language_ids": {
+            "items": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Language Ids",
+            "type": "array"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/Skill"
+            },
+            "maxItems": 150,
+            "title": "Skills",
+            "type": "array"
+          },
+          "summary_ids": {
+            "items": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Summary Ids",
+            "type": "array"
+          }
+        },
+        "title": "ProfessionalProfile",
+        "type": "object"
+      },
+      "ProfileReview": {
+        "additionalProperties": false,
+        "properties": {
+          "confirm_all": {
+            "default": false,
+            "title": "Confirm All",
+            "type": "boolean"
+          },
+          "confirm_ids": {
+            "items": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+              "type": "string"
+            },
+            "maxItems": 300,
+            "title": "Confirm Ids",
+            "type": "array"
+          },
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "notes": {
+            "maxLength": 3000,
+            "minLength": 1,
+            "title": "Notes",
+            "type": "string"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/ProfessionalProfile"
+          }
+        },
+        "required": [
+          "expected_revision",
+          "profile",
+          "notes"
+        ],
+        "title": "ProfileReview",
+        "type": "object"
+      },
+      "Skill": {
+        "additionalProperties": false,
+        "properties": {
+          "experience_ids": {
+            "items": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "title": "Experience Ids",
+            "type": "array"
+          },
+          "fact_id": {
+            "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+            "title": "Fact Id",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "project_ids": {
+            "items": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}$",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "title": "Project Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "fact_id"
+        ],
+        "title": "Skill",
+        "type": "object"
+      },
+      "SuggestionDecision": {
+        "additionalProperties": false,
+        "properties": {
+          "decision": {
+            "enum": [
+              "accepted",
+              "rejected"
+            ],
+            "title": "Decision",
+            "type": "string"
+          },
+          "id": {
+            "minimum": 1.0,
+            "title": "Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "decision"
+        ],
+        "title": "SuggestionDecision",
+        "type": "object"
+      },
+      "TailorInput": {
+        "additionalProperties": false,
+        "properties": {
+          "consent_external_processing": {
+            "default": false,
+            "title": "Consent External Processing",
+            "type": "boolean"
+          },
+          "language": {
+            "default": "pt-BR",
+            "enum": [
+              "pt-BR",
+              "en"
+            ],
+            "title": "Language",
+            "type": "string"
+          },
+          "provider": {
+            "default": "deterministic",
+            "enum": [
+              "deterministic",
+              "claude_code",
+              "codex"
+            ],
+            "title": "Provider",
+            "type": "string"
+          },
+          "resume_id": {
+            "minimum": 1.0,
+            "title": "Resume Id",
+            "type": "integer"
+          },
+          "template": {
+            "const": "ats-simple-v1",
+            "default": "ats-simple-v1",
+            "title": "Template",
+            "type": "string"
+          }
+        },
+        "required": [
+          "resume_id"
+        ],
+        "title": "TailorInput",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "VersionReview": {
+        "additionalProperties": false,
+        "properties": {
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/SuggestionDecision"
+            },
+            "maxItems": 400,
+            "title": "Decisions",
+            "type": "array"
+          },
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "notes": {
+            "maxLength": 3000,
+            "minLength": 1,
+            "title": "Notes",
+            "type": "string"
+          },
+          "reject_version": {
+            "default": false,
+            "title": "Reject Version",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "expected_revision",
+          "notes"
+        ],
+        "title": "VersionReview",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "ATSClientCertificate": {
+        "description": "CA-validated client certificate; allowed leaf SHA-256, validity and revocation checked on every request",
+        "type": "mutualTLS"
+      },
+      "ATSOperator": {
+        "description": "Single opaque delegated operator, selected by the authenticated service. Never sufficient without mTLS, policy and ATS bearer.",
+        "in": "header",
+        "name": "X-ATS-Operator",
+        "type": "apiKey"
+      },
+      "ATSServiceBearer": {
+        "description": "Server-held ATS bearer, in addition to mandatory transport mTLS and delegated operator",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "title": "Job Agent Private ATS Service",
+    "version": "0.8.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "boolean"
+                  },
+                  "title": "Response Health Health Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "ATSClientCertificate": []
+          }
+        ],
+        "summary": "Health"
+      }
+    },
+    "/jobs/{job_id}/requirements/analyze": {
+      "post": {
+        "description": "Private service operation; mTLS identity, runtime policy, ATS bearer, single delegated operator and resource grants are all required.",
+        "operationId": "analyze_jobs__job_id__requirements_analyze_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Missing or invalid private token"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Local access/origin or consent required"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Private token not configured"
+          }
+        },
+        "security": [
+          {
+            "ATSClientCertificate": [],
+            "ATSOperator": [],
+            "ATSServiceBearer": []
+          }
+        ],
+        "summary": "Analyze",
+        "tags": [
+          "private-resumes"
+        ],
+        "x-ats-scope": "ats:analyze",
+        "x-private-operation": true
+      }
+    },
+    "/jobs/{job_id}/resumes": {
+      "get": {
+        "description": "Private service operation; mTLS identity, runtime policy, ATS bearer, single delegated operator and resource grants are all required.",
+        "operationId": "list_versions_jobs__job_id__resumes_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Missing or invalid private token"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Local access/origin or consent required"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Private token not configured"
+          }
+        },
+        "security": [
+          {
+            "ATSClientCertificate": [],
+            "ATSOperator": [],
+            "ATSServiceBearer": []
+          }
+        ],
+        "summary": "List Versions",
+        "tags": [
+          "private-resumes"
+        ],
+        "x-ats-scope": "ats:read",
+        "x-private-operation": true
+      }
+    },
+    "/jobs/{job_id}/resumes/tailor": {
+      "post": {
+        "description": "Private service operation; mTLS identity, runtime policy, ATS bearer, single delegated operator and resource grants are all required.",
+        "operationId": "tailor_jobs__job_id__resumes_tailor_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TailorInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Missing or invalid private token"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Local access/origin or consent required"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Private token not configured"
+          }
+        },
+        "security": [
+          {
+            "ATSClientCertificate": [],
+            "ATSOperator": [],
+            "ATSServiceBearer": []
+          }
+        ],
+        "summary": "Tailor",
+        "tags": [
+          "private-resumes"
+        ],
+        "x-ats-scope": "ats:tailor",
+        "x-private-operation": true
+      }
+    },
+    "/resumes": {
+      "get": {
+        "description": "Private service operation; mTLS identity, runtime policy, ATS bearer, single delegated operator and resource grants are all required.",
+        "operationId": "list_resumes_resumes_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Missing or invalid private token"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Local access/origin or consent required"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Private token not configured"
+          }
+        },
+        "security": [
+          {
+            "ATSClientCertificate": [],
+            "ATSOperator": [],
+            "ATSServiceBearer": []
+          }
+        ],
+        "summary": "List Resumes",
+        "tags": [
+          "private-resumes"
+        ],
+        "x-ats-scope": "ats:read",
+        "x-private-operation": true
+      }
+    },
+    "/resumes/import": {
+      "post": {
+        "description": "Private service operation; mTLS identity, runtime policy, ATS bearer, single delegated operator and resource grants are all required.",
+        "operationId": "import_resume_resumes_import_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ProfessionalProfile"
+                  },
+                  {
+                    "properties": {
+                      "filename": {
+                        "default": "master.json",
+                        "type": "string"
+                      },
+                      "profile": {
+                        "$ref": "#/components/schemas/ProfessionalProfile"
+                      }
+                    },
+                    "required": [
+                      "profile"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "application/pdf": {
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            },
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Missing or invalid private token"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Local access/origin or consent required"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Upload size exceeded"
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unsupported media type"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Invalid private resume request"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Private token not configured"
+          }
+        },
+        "security": [
+          {
+            "ATSClientCertificate": [],
+            "ATSOperator": [],
+            "ATSServiceBearer": []
+          }
+        ],
+        "summary": "Import Resume",
+        "tags": [
+          "private-resumes"
+        ],
+        "x-ats-scope": "ats:import",
+        "x-private-operation": true
+      }
+    },
+    "/resumes/versions/{version_id}/approve": {
+      "post": {
+        "description": "Private service operation; mTLS identity, runtime policy, ATS bearer, single delegated operator and resource grants are all required.",
+        "operationId": "approve_resumes_versions__version_id__approve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "version_id",
+            "required": true,
+            "schema": {
+              "title": "Version Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Approval"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Missing or invalid private token"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Local access/origin or consent required"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Private token not configured"
+          }
+        },
+        "security": [
+          {
+            "ATSClientCertificate": [],
+            "ATSOperator": [],
+            "ATSServiceBearer": []
+          }
+        ],
+        "summary": "Approve",
+        "tags": [
+          "private-resumes"
+        ],
+        "x-ats-scope": "ats:approve",
+        "x-private-operation": true
+      }
+    },
+    "/resumes/versions/{version_id}/ats-report": {
+      "get": {
+        "description": "Private service operation; mTLS identity, runtime policy, ATS bearer, single delegated operator and resource grants are all required.",
+        "operationId": "report_resumes_versions__version_id__ats_report_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "version_id",
+            "required": true,
+            "schema": {
+              "title": "Version Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Missing or invalid private token"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Local access/origin or consent required"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Private token not configured"
+          }
+        },
+        "security": [
+          {
+            "ATSClientCertificate": [],
+            "ATSOperator": [],
+            "ATSServiceBearer": []
+          }
+        ],
+        "summary": "Report",
+        "tags": [
+          "private-resumes"
+        ],
+        "x-ats-scope": "ats:read",
+        "x-private-operation": true
+      }
+    },
+    "/resumes/versions/{version_id}/diff": {
+      "get": {
+        "description": "Private service operation; mTLS identity, runtime policy, ATS bearer, single delegated operator and resource grants are all required.",
+        "operationId": "diff_resumes_versions__version_id__diff_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "version_id",
+            "required": true,
+            "schema": {
+              "title": "Version Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Missing or invalid private token"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Local access/origin or consent required"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Private token not configured"
+          }
+        },
+        "security": [
+          {
+            "ATSClientCertificate": [],
+            "ATSOperator": [],
+            "ATSServiceBearer": []
+          }
+        ],
+        "summary": "Diff",
+        "tags": [
+          "private-resumes"
+        ],
+        "x-ats-scope": "ats:read",
+        "x-private-operation": true
+      }
+    },
+    "/resumes/versions/{version_id}/export": {
+      "get": {
+        "description": "Private service operation; mTLS identity, runtime policy, ATS bearer, single delegated operator and resource grants are all required.",
+        "operationId": "export_resumes_versions__version_id__export_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "version_id",
+            "required": true,
+            "schema": {
+              "title": "Version Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "pdf",
+              "pattern": "^(pdf|docx)$",
+              "title": "Format",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              },
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Private checksummed attachment"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Missing or invalid private token"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Local access/origin or consent required"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Private token not configured"
+          }
+        },
+        "security": [
+          {
+            "ATSClientCertificate": [],
+            "ATSOperator": [],
+            "ATSServiceBearer": []
+          }
+        ],
+        "summary": "Export",
+        "tags": [
+          "private-resumes"
+        ],
+        "x-ats-scope": "ats:export",
+        "x-private-operation": true
+      }
+    },
+    "/resumes/versions/{version_id}/review": {
+      "patch": {
+        "description": "Private service operation; mTLS identity, runtime policy, ATS bearer, single delegated operator and resource grants are all required.",
+        "operationId": "review_resumes_versions__version_id__review_patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "version_id",
+            "required": true,
+            "schema": {
+              "title": "Version Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VersionReview"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Missing or invalid private token"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Local access/origin or consent required"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Private token not configured"
+          }
+        },
+        "security": [
+          {
+            "ATSClientCertificate": [],
+            "ATSOperator": [],
+            "ATSServiceBearer": []
+          }
+        ],
+        "summary": "Review",
+        "tags": [
+          "private-resumes"
+        ],
+        "x-ats-scope": "ats:review",
+        "x-private-operation": true
+      }
+    },
+    "/resumes/{resume_id}": {
+      "get": {
+        "description": "Private service operation; mTLS identity, runtime policy, ATS bearer, single delegated operator and resource grants are all required.",
+        "operationId": "get_resume_resumes__resume_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resume_id",
+            "required": true,
+            "schema": {
+              "title": "Resume Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Missing or invalid private token"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Local access/origin or consent required"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Private token not configured"
+          }
+        },
+        "security": [
+          {
+            "ATSClientCertificate": [],
+            "ATSOperator": [],
+            "ATSServiceBearer": []
+          }
+        ],
+        "summary": "Get Resume",
+        "tags": [
+          "private-resumes"
+        ],
+        "x-ats-scope": "ats:read",
+        "x-private-operation": true
+      }
+    },
+    "/resumes/{resume_id}/profile": {
+      "get": {
+        "description": "Private service operation; mTLS identity, runtime policy, ATS bearer, single delegated operator and resource grants are all required.",
+        "operationId": "get_profile_resumes__resume_id__profile_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resume_id",
+            "required": true,
+            "schema": {
+              "title": "Resume Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Missing or invalid private token"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Local access/origin or consent required"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Private token not configured"
+          }
+        },
+        "security": [
+          {
+            "ATSClientCertificate": [],
+            "ATSOperator": [],
+            "ATSServiceBearer": []
+          }
+        ],
+        "summary": "Get Profile",
+        "tags": [
+          "private-resumes"
+        ],
+        "x-ats-scope": "ats:read",
+        "x-private-operation": true
+      },
+      "patch": {
+        "description": "Private service operation; mTLS identity, runtime policy, ATS bearer, single delegated operator and resource grants are all required.",
+        "operationId": "confirm_profile_resumes__resume_id__profile_patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resume_id",
+            "required": true,
+            "schema": {
+              "title": "Resume Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileReview"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Missing or invalid private token"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Local access/origin or consent required"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Private token not configured"
+          }
+        },
+        "security": [
+          {
+            "ATSClientCertificate": [],
+            "ATSOperator": [],
+            "ATSServiceBearer": []
+          }
+        ],
+        "summary": "Confirm Profile",
+        "tags": [
+          "private-resumes"
+        ],
+        "x-ats-scope": "ats:profile:write",
+        "x-private-operation": true
+      }
+    }
+  },
+  "servers": [
+    {
+      "description": "Private Docker DNS; real Host/SNI, no published port",
+      "url": "https://ats-service:8766"
+    }
+  ]
+}
