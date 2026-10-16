@@ -137,7 +137,17 @@ def run(backend, bff_image, ats_image, validation_image):
             }
         }
         override["services"]["public-stub"] = {
-            "healthcheck": {"disable": True},
+            "healthcheck": {
+                "test": [
+                    "CMD",
+                    "python",
+                    "-c",
+                    "import socket; socket.create_connection(('127.0.0.1', 8765), timeout=2).close()",
+                ],
+                "interval": "2s",
+                "timeout": "3s",
+                "retries": 15,
+            },
             "image": bff_image,
             "user": runtime_user,
             "command": [
@@ -154,7 +164,7 @@ def run(backend, bff_image, ats_image, validation_image):
             "image": "nginx:stable-alpine",
             "depends_on": {
                 "bff": {"condition": "service_healthy"},
-                "public-stub": {"condition": "service_started"},
+                "public-stub": {"condition": "service_healthy"},
             },
             "user": runtime_user,
             "entrypoint": ["nginx"],
@@ -232,7 +242,7 @@ def run(backend, bff_image, ats_image, validation_image):
                 ],
                 env,
             )
-            for name in ("ats-service", "bff", "web"):
+            for name in ("ats-service", "bff", "public-stub", "web"):
                 identifier = command([*compose, "ps", "-q", name], env).strip()
                 meta = json.loads(command(["docker", "inspect", identifier]))[0]
                 assert not meta["HostConfig"]["PortBindings"]
