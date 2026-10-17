@@ -74,6 +74,7 @@ nunca recebe caminho, URL ou cabeçalho Authorization do navegador.
 | GET | `/workspace/admin/sources/{source_id}/errors` | histórico de falhas da fonte |
 | GET | `/workspace/admin/collections/status` | estado do scheduler/lock e modo de fontes |
 | POST | `/workspace/admin/collections/run` | iniciar coleta manual; exige CSRF |
+| POST | `/workspace/admin/collections/start` | iniciar coleta assíncrona com `source_ids`; retorna 202 e `run_id` |
 | GET | `/workspace/admin/collections/runs` | histórico paginado de coletas |
 | GET | `/workspace/admin/collections/runs/{run_id}` | detalhe de uma coleta |
 | GET | `/workspace/admin/collections/errors` | falhas paginadas |

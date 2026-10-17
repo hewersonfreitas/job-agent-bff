@@ -59,6 +59,12 @@ scope `discovery:admin`, CSRF nas escritas e auditoria. O host expõe a API some
 em 127.0.0.1; Nginx não encaminha as rotas `/admin/*` do backend. O token de
 administração é separado do bearer ATS e dos tokens Resume/Social.
 
+O início assíncrono usa `POST /workspace/admin/collections/start`, exige a mesma
+sessão, scope e CSRF das demais escritas, e aceita somente IDs de fontes. O BFF
+retorna HTTP 202 depois que o backend persiste o `run_id`; a conexão não aguarda a
+coleta. O navegador acompanha por status e histórico autenticados. A rota síncrona
+legada `/workspace/admin/collections/run` permanece para compatibilidade.
+
 Compose local mantém UID/mode dos bind mounts de secrets. `BFF_RUNTIME_USER` deve
 ser não-root e ter leitura dos arquivos privados. O padrão da imagem é 10001:10001;
 se optar por outro UID, prepare **somente o novo volume BFF** com esse proprietário.
