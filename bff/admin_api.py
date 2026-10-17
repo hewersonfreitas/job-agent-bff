@@ -170,6 +170,20 @@ def create_router(authenticated, csrf_check):
         await require_empty_body(request)
         return await call(request, "POST", "/admin/collections/run", models.ManualResult)
 
+    @router.post("/collections/start", response_model=models.CollectionAccepted, status_code=202)
+    async def start_collection(request: Request, value: models.CollectionStartRequest):
+        check_query(request, set())
+        session = authorize(request)
+        csrf_check(request, session)
+        return await call(
+            request,
+            "POST",
+            "/admin/collections/start",
+            models.CollectionAccepted,
+            body=value.model_dump(),
+            status=202,
+        )
+
     @router.get("/collections/runs", response_model=models.RunPage)
     async def collection_runs(
         request: Request,

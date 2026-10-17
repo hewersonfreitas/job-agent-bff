@@ -52,6 +52,8 @@ class ManagedSource(Strict):
     updated_at: str
     last_collected_at: str | None
     last_result: Outcome | None
+    collection_ready: bool = True
+    collection_block_reason: str | None = None
 
 
 class SourcePage(Strict):
@@ -104,6 +106,26 @@ class CollectionRun(Strict):
 
 class RunDetail(CollectionRun):
     sources: list[SourceRun]
+    selected_source_ids: list[int] = Field(default_factory=list)
+
+
+class CollectionStartRequest(Strict):
+    source_ids: list[int] = Field(min_length=1, max_length=210)
+
+    @model_validator(mode="after")
+    def unique_positive_source_ids(self):
+        if any(value <= 0 for value in self.source_ids) or len(set(self.source_ids)) != len(
+            self.source_ids
+        ):
+            raise ValueError("Source IDs must be unique positive integers")
+        return self
+
+
+class CollectionAccepted(Strict):
+    run_id: int
+    status: Literal["running"]
+    selected_source_ids: list[int]
+    started_at: str
 
 
 class RunPage(Strict):
