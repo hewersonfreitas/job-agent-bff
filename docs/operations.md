@@ -40,6 +40,25 @@ execução direta aponta ao **mesmo arquivo** que ATS_TOKEN_FILE. No Compose amb
 consomem o secret ats_token. As CAs e certificados são montados diretamente dos
 caminhos absolutos provisionados; não há cópia manual entre repositórios.
 
+## Token administrativo do backend
+
+O operador provisiona um token aleatório de pelo menos 32 bytes em um arquivo fora
+dos repositórios, com diretório 0700 e arquivo 0600. Configure somente o caminho
+em `ADMIN_API_TOKEN_SECRET_FILE`. O backend monta o arquivo read-only em
+`/run/secrets/admin_api_token`; o BFF monta o mesmo arquivo e recebe internamente
+o caminho `/run/secrets/admin_api_token`. Nenhum dos containers recebe o valor do
+token por variável de ambiente. Recrie API e BFF após rotação para evitar inode
+antigo de bind mount; invalide o token antigo removendo/substituindo o arquivo e
+reiniciando os dois serviços na mesma janela. Nunca copie o valor para `.env`, Git,
+frontend ou logs.
+
+Compose conecta apenas API e BFF à rede internal `admin-private`. O backend aceita
+chamadas para o hostname real `api` nessa rede apenas com o bearer válido e sem
+Origin/Fetch Metadata. O BFF protege `/workspace/admin/*` com sessão do operador,
+scope `discovery:admin`, CSRF nas escritas e auditoria. O host expõe a API somente
+em 127.0.0.1; Nginx não encaminha as rotas `/admin/*` do backend. O token de
+administração é separado do bearer ATS e dos tokens Resume/Social.
+
 Compose local mantém UID/mode dos bind mounts de secrets. `BFF_RUNTIME_USER` deve
 ser não-root e ter leitura dos arquivos privados. O padrão da imagem é 10001:10001;
 se optar por outro UID, prepare **somente o novo volume BFF** com esse proprietário.

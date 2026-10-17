@@ -51,6 +51,9 @@ def run(backend, bff_image, ats_image, validation_image):
         password = temp / "operator.hash"
         password.write_text(password_hash)
         password.chmod(0o600)
+        admin_token = temp / "admin-api-token"
+        admin_token.write_text("synthetic-ci-admin-token")
+        admin_token.chmod(0o600)
         # Browser HTTPS uses its own synthetic leaf; the ATS leaf remains unchanged.
         fixtures.command(
             "req",
@@ -113,6 +116,7 @@ def run(backend, bff_image, ats_image, validation_image):
             "ATS_SERVER_CERT_FILE": str(root / "server.crt"),
             "ATS_SERVER_KEY_FILE": str(root / "server.key"),
             "ATS_CLIENT_CA_FILE": str(root / "ca.crt"),
+            "ADMIN_API_TOKEN_SECRET_FILE": str(admin_token),
         }
         override = {
             "services": {

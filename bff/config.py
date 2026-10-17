@@ -18,6 +18,7 @@ SCOPES = frozenset(
         "ats:review",
         "ats:approve",
         "ats:export",
+        "discovery:admin",
     }
 )
 COOKIE = "__Host-job-agent-session"
@@ -48,6 +49,7 @@ class Settings(BaseModel):
     operator_id: str = Field(pattern=r"^[a-zA-Z0-9_-]{1,64}$")
     password_file: Path
     token_file: Path
+    admin_token_file: Path | None = None
     ca_file: Path
     cert_file: Path
     key_file: Path
@@ -110,4 +112,13 @@ def load_token(settings: Settings) -> str:
     value = private_file(settings.token_file, 1024).decode("ascii").strip()
     if not re.fullmatch(r"[A-Za-z0-9._~-]{32,512}", value):
         raise ValueError("Invalid ATS token file")
+    return value
+
+
+def load_admin_token(settings: Settings) -> str:
+    if settings.admin_token_file is None:
+        raise ValueError("Administrative service credential is not configured")
+    value = private_file(settings.admin_token_file, 1024).decode("ascii").strip()
+    if not re.fullmatch(r"[A-Za-z0-9._~-]{43,512}", value):
+        raise ValueError("Invalid administrative service credential")
     return value

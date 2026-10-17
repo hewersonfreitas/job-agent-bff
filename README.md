@@ -16,7 +16,7 @@ Origin/Fetch Metadata, allowlist de 13 operações, scopes e grants do backend.
 Não há senha padrão, cadastro público nem modo autenticado por HTTP.
 
 - [Arquitetura e fonte dos contratos](docs/architecture.md)
-- [Endpoints de sessão e ATS](docs/endpoints.md)
+- [Endpoints de sessão, ATS e administração de descoberta](docs/endpoints.md)
 - [Docker, operador, HTTPS, mTLS, rotação e revogação](docs/operations.md)
 - [Modelo de ameaças](docs/threat-model.md)
 - [Patch Nginx e dependências frontend ATS v0.4](docs/nginx-frontend.md)

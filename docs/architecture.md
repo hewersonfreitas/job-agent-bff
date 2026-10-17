@@ -55,3 +55,20 @@ Rotação/retenção/backup do journal são responsabilidade operacional (ver op
 OIDC futuro: substituir verificação local por Authorization Code + PKCE, state,
 nonce, issuer/audience/assinatura e allowlist do operador. Preservar sessões opacas,
 CSRF e fronteira ATS. Multiusuário depende primeiro de ownership no backend.
+
+## Administração de descoberta
+
+Rotas explícitas em `/workspace/admin` permitem ao operador administrar fontes e
+consultar/executar coletas. Elas não usam o transporte ATS nem seus certificados,
+token, operador delegado ou grants. O BFF exige sessão mais `discovery:admin` e
+CSRF em cada escrita, então carrega um bearer administrativo separado de um arquivo
+privado e encaminha somente operações codificadas no servidor. Respostas e erros
+são validados e sanitizados; não existe proxy para caminhos arbitrários.
+
+API e BFF compartilham a rede Docker `admin-private`, marcada internal. O BFF usa
+`http://api:8765` com seu Host real; a API aceita esse hostname somente se o bearer
+for válido e Origin/Fetch Metadata estiverem ausentes. A rede só dá conectividade,
+não identidade. O token de 256 bits é a prova de serviço e fica em secret read-only
+montado em ambos os containers. A API também permanece publicada apenas no loopback
+do host. O Nginx não encaminha `/api/admin/*`; as rotas administrativas só entram
+pelo prefixo autenticado `/workspace/admin`.

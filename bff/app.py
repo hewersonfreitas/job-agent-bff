@@ -18,6 +18,8 @@ from pydantic import TypeAdapter, ValidationError
 from starlette.concurrency import run_in_threadpool
 
 from bff import models
+from bff.admin_api import create_router as create_admin_router
+from bff.admin_upstream import client as admin_client
 from bff.config import COOKIE, Settings, load_password, load_token
 from bff.contracts import OPERATIONS, validate_schema
 from bff.store import Store, digest
@@ -54,7 +56,9 @@ def json_body(data):
         raise HTTPException(422, "Invalid request") from None
 
 
-def create_app(settings: Settings | None = None, transport=None, clock=time.time):
+def create_app(
+    settings: Settings | None = None, transport=None, clock=time.time, admin_transport=None
+):
     @asynccontextmanager
     async def lifespan(app):
         conf = settings or Settings.environment()
@@ -63,8 +67,10 @@ def create_app(settings: Settings | None = None, transport=None, clock=time.time
         app.state.settings = conf
         app.state.store = Store(conf, clock)
         app.state.ats = transport or client(conf)
+        app.state.admin_http = admin_client(admin_transport)
         yield
         await app.state.ats.aclose()
+        await app.state.admin_http.aclose()
 
     app = FastAPI(
         title="Job Agent BFF",
@@ -367,6 +373,7 @@ def create_app(settings: Settings | None = None, transport=None, clock=time.time
             name=op.method.lower() + "_" + op.path.replace("/", "_"),
             response_model=None,
         )
+    app.include_router(create_admin_router(authenticated, csrf_check))
     return app
 
 
