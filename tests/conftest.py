@@ -13,9 +13,20 @@ PASSWORD = "synthetic-test-password-only"
 @pytest.fixture
 def settings(tmp_path):
     paths = {}
-    for name in ("password_file", "token_file", "ca_file", "cert_file", "key_file"):
+    for name in (
+        "password_file",
+        "token_file",
+        "admin_token_file",
+        "ca_file",
+        "cert_file",
+        "key_file",
+    ):
         path = tmp_path / name
-        path.write_text(PasswordHasher().hash(PASSWORD) if name == "password_file" else "x" * 40)
+        path.write_text(
+            PasswordHasher().hash(PASSWORD)
+            if name == "password_file"
+            else ("a" * 43 if name == "admin_token_file" else "x" * 40)
+        )
         path.chmod(0o600)
         paths[name] = path
     return Settings(

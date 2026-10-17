@@ -56,3 +56,30 @@ attachment e X-Resume-State quando válido. Nunca contém token em URL.
 409 é preservado: recarregar versão/perfil e decidir novamente. 502 indica resposta
 incompatível ou falha do provider; 503 indica indisponibilidade. Após timeout/503,
 a escrita pode ter ocorrido; não repetir automaticamente.
+
+## Administração de descoberta
+
+Prefixo `/workspace/admin`. Cada operação exige a sessão do operador e o scope
+`discovery:admin`. Escritas também exigem o token CSRF sincronizado, Origin HTTPS
+exata e Fetch Metadata compatível. O BFF chama apenas os caminhos fixos abaixo;
+nunca recebe caminho, URL ou cabeçalho Authorization do navegador.
+
+| Método | Caminho | Operação do backend |
+|---|---|---|
+| GET | `/workspace/admin/sources` | listar fontes; filtros `provider`, `active`, `limit`, `offset` |
+| POST | `/workspace/admin/sources` | cadastrar fonte; corpo tipado por provedor |
+| POST | `/workspace/admin/sources/import` | importar explicitamente o arquivo legado do servidor |
+| GET | `/workspace/admin/sources/{source_id}` | detalhar fonte |
+| PATCH | `/workspace/admin/sources/{source_id}` | editar ou ativar/desativar fonte |
+| GET | `/workspace/admin/sources/{source_id}/errors` | histórico de falhas da fonte |
+| GET | `/workspace/admin/collections/status` | estado do scheduler/lock e modo de fontes |
+| POST | `/workspace/admin/collections/run` | iniciar coleta manual; exige CSRF |
+| GET | `/workspace/admin/collections/runs` | histórico paginado de coletas |
+| GET | `/workspace/admin/collections/runs/{run_id}` | detalhe de uma coleta |
+| GET | `/workspace/admin/collections/errors` | falhas paginadas |
+
+Erros do upstream são sanitizados. O BFF envia o bearer administrativo apenas
+no lado servidor; ele não aparece em resposta, bundle, cookie ou armazenamento do
+navegador. As operações passam pela auditoria SQLite já existente do BFF. O token
+tem scope administrativo único porque a instalação suporta um operador; o BFF não
+implementa cadastro nem autorização multiusuário.

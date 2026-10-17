@@ -10,13 +10,14 @@ services:
       BFF_DATABASE: /data/sessions.db
       BFF_PASSWORD_FILE: /run/secrets/bff_password
       BFF_TOKEN_FILE: /run/secrets/ats_token
+      BFF_ADMIN_TOKEN_FILE: /run/secrets/admin_api_token
       BFF_CA_FILE: /run/secrets/bff_server_ca
       BFF_CERT_FILE: /run/secrets/bff_client_cert
       BFF_KEY_FILE: /run/secrets/bff_client_key
-    secrets: [bff_password, ats_token, bff_server_ca, bff_client_cert, bff_client_key]
+    secrets: [bff_password, ats_token, bff_server_ca, bff_client_cert, bff_client_key, admin_api_token]
     volumes:
       - bff-sessions:/data
-    networks: [ats-private, bff-edge]
+    networks: [ats-private, bff-edge, admin-private]
     depends_on:
       ats-service:
         condition: service_healthy
@@ -35,9 +36,13 @@ services:
 networks:
   bff-edge:
     internal: true
+  admin-private:
+    internal: true
 volumes:
   bff-sessions:
 secrets:
+  admin_api_token:
+    file: ${ADMIN_API_TOKEN_SECRET_FILE:?Set ADMIN_API_TOKEN_SECRET_FILE}
   bff_password:
     file: ${BFF_PASSWORD_FILE:?Set private absolute BFF_PASSWORD_FILE}
   bff_server_ca:
