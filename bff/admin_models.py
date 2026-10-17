@@ -114,7 +114,9 @@ class CollectionStartRequest(Strict):
 
     @model_validator(mode="after")
     def unique_positive_source_ids(self):
-        if any(value <= 0 for value in self.source_ids) or len(set(self.source_ids)) != len(self.source_ids):
+        if any(value <= 0 for value in self.source_ids) or len(set(self.source_ids)) != len(
+            self.source_ids
+        ):
             raise ValueError("Source IDs must be unique positive integers")
         return self
 

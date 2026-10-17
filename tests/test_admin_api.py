@@ -41,10 +41,15 @@ def application(settings, calls, code=200, payload=None):
                 200, json={"run_id": 9, "imported": {}, "errors": [], "requests": 0}
             )
         if request.method == "POST" and request.url.path == "/admin/collections/start":
-            return httpx.Response(202, json={
-                "run_id": 10, "status": "running", "selected_source_ids": [7],
-                "started_at": "2026-01-01T00:00:00Z",
-            })
+            return httpx.Response(
+                202,
+                json={
+                    "run_id": 10,
+                    "status": "running",
+                    "selected_source_ids": [7],
+                    "started_at": "2026-01-01T00:00:00Z",
+                },
+            )
         if request.method == "GET" and request.url.path == "/admin/collections/status":
             return httpx.Response(
                 200,
@@ -171,7 +176,10 @@ def test_explicit_import_and_manual_collection_are_session_and_csrf_gated(settin
 def test_async_collection_start_is_session_csrf_and_payload_gated(settings):
     calls = []
     with application(settings, calls) as browser:
-        assert browser.post("/workspace/admin/collections/start", json={"source_ids": [7]}).status_code == 401
+        assert (
+            browser.post("/workspace/admin/collections/start", json={"source_ids": [7]}).status_code
+            == 401
+        )
         login(browser)
         browser.headers["X-CSRF-Token"] = "invalid"
         rejected = browser.post("/workspace/admin/collections/start", json={"source_ids": [7]})
